@@ -6,5 +6,5 @@
 - Postgres (latest)
 
   -----------
-- Загрузил образ в Docker Hub: docker pull aligator9/my-backend-internship-project
+- Загрузил образ в Docker Hub: docker push aligator9/internship-main-service
 - Подготовил docker-compose.yaml рецепт.
