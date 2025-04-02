@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CourseMapper {
 
-    Course toCourse(CourseDto courseDto);
-    CourseDto toCourseDto(Course course);
-    List<Course> toCourseEntityList(List<CourseDto> courseDtoList);
-    List<CourseDto> toCourseDtoList(List<Course> courseList);
+    Course toEntity(CourseDto courseDto);
+    CourseDto toDto(Course course);
+    List<Course> toEntityList(List<CourseDto> courseDtoList);
+    List<CourseDto> toDtoList(List<Course> courseList);
 }

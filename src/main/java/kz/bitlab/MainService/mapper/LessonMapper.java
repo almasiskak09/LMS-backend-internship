@@ -13,13 +13,13 @@ import java.util.List;
 public interface LessonMapper {
 
     @Mapping(source = "chapterId", target = "chapter", qualifiedByName = "mapChapterFromId")
-    Lesson toLessonEntity(LessonDto lessonDto);
+    Lesson toEntity(LessonDto lessonDto);
 
     @Mapping(source = "chapter.id", target = "chapterId")
-    LessonDto toLessonDto(Lesson lesson);
+    LessonDto toDto(Lesson lesson);
 
-    List<Lesson>toLessonEntityList(List<LessonDto> lessonDtoList);
-    List<LessonDto> toLessonDtoList(List<Lesson> lessonList);
+    List<Lesson>toEntityList(List<LessonDto> lessonDtoList);
+    List<LessonDto> toDtoList(List<Lesson> lessonList);
 
     @Named("mapChapterFromId")
     default Chapter mapChapterFromId(Long chapterId) {
