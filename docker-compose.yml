@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  main-service:
+    image: 'aligator9/internship-main-service'
+    container_name: 'internship-main-service-container'
+    depends_on:
+      - main-service-database
+    ports:
+      - "7070:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-service-database:5432/internship-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=almas0606
+
+  main-service-database:
+    image: 'postgres'
+    container_name: 'internship-database-container'
+    ports:
+      - "2345:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=almas0606
+      - POSTGRES_DB=internship-db
