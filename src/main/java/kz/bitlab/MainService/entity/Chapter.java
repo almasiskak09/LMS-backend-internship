@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,9 +36,11 @@ public class Chapter {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @UpdateTimestamp
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
+    @UpdateTimestamp
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
