@@ -20,6 +20,7 @@ public class CourseService {
 
     public List<CourseDto> getAllCourses () {
         List<CourseDto> courseDtoList = courseMapper.toDtoList(courseRepository.findAll());
+
         log.info("Был выполнен поиск списка всех курсов");
 
         return courseDtoList;
@@ -36,9 +37,6 @@ public class CourseService {
     }
 
     public CourseDto createCourse(CourseDto courseDto){
-        if(courseDto == null){
-            throw new IllegalArgumentException("Данные курса не могут быть null");
-        }
         Course addingCourse = courseMapper.toEntity(courseDto);
         courseRepository.save(addingCourse);
 
@@ -53,7 +51,7 @@ public class CourseService {
                                     orElseThrow(()-> new RuntimeException("Курс по данному id: "+courseDto.getCreatedTime()+" - не найден"));
         Course savedCourse = courseRepository.save(courseMapper.toEntity(courseDto));
 
-        log.info("Курс с id: {} - был добавлен", courseDto.getId());
+        log.info("Курс с id: {} - был обновлен", courseDto.getId());
 
         return courseMapper.toDto(savedCourse);
     }
