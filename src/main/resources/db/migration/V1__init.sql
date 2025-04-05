@@ -1,7 +1,7 @@
 CREATE TABLE course
 (
     id BIGSERIAL PRIMARY KEY ,
-    course_name VARCHAR(255) NOT NULL ,
+    course_name VARCHAR(255) NOT NULL UNIQUE ,
     course_description TEXT ,
     created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
@@ -10,7 +10,7 @@ CREATE TABLE course
 CREATE TABLE chapter
 (
     id BIGSERIAL PRIMARY KEY ,
-    chapter_name VARCHAR(255) NOT NULL ,
+    chapter_name VARCHAR(255) NOT NULL UNIQUE ,
     chapter_description TEXT,
     chapter_order BIGSERIAL,
     created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -23,7 +23,7 @@ CREATE INDEX idx_chapter_course ON chapter (course_id);
 CREATE TABLE lesson
 (
     id BIGSERIAL PRIMARY KEY,
-    lesson_name VARCHAR(255) NOT NULL ,
+    lesson_name VARCHAR(255) NOT NULL UNIQUE ,
     lesson_description TEXT,
     lesson_content TEXT,
     lesson_order BIGSERIAL,

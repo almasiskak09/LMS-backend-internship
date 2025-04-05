@@ -2,6 +2,7 @@ package kz.bitlab.MainService.restApi;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import kz.bitlab.MainService.dto.CourseDto;
 import kz.bitlab.MainService.services.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class CourseApi {
 
     @PostMapping
     @Operation(summary = "Добавление курса")
-    public ResponseEntity<CourseDto> addCourse(@RequestBody CourseDto courseDto){
+    public ResponseEntity<CourseDto> addCourse( @RequestBody CourseDto courseDto){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(courseService.createCourse(courseDto));
     }

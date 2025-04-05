@@ -1,5 +1,8 @@
 package kz.bitlab.MainService.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +18,7 @@ import java.util.List;
 public class CourseDto {
 
     private Long id;
+
     private String courseName;
     private String courseDescription;
     private LocalDateTime createdTime;
