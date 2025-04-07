@@ -106,8 +106,8 @@ public class ChapterService {
 
     private void DataIntegrityViolationException(DataIntegrityViolationException e) {
         String message = e.getMessage();
-        log.error("Глава с такими данными уже существует: {}", message);
-        throw new RuntimeException("Глава с такими данными уже существует: "+ message );
+        log.error("Глава с таким названием уже существует: {}", message);
+        throw new RuntimeException("Глава с таким названием уже существует: " );
     }
 
 

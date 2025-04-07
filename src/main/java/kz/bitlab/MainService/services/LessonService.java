@@ -105,8 +105,8 @@ public class LessonService {
 
     private void handleDataIntegrityViolationException(DataIntegrityViolationException e){
         String message = e.getMessage();
-        log.error("Урок с такими данными уже существует: {} " + message);
-        throw new RuntimeException("Урок с такими данными уже существует: "+ message );
+        log.error("Урок с таким названием уже существует: {} " + message);
+        throw new RuntimeException("Урок с таким названием уже существует: "+ message );
     }
 
 }

@@ -86,8 +86,8 @@ public class CourseService {
 
     private void dataIntegrityViolationException(DataIntegrityViolationException e) {
         String message = e.getMessage();
-        log.error("Кус с такими данными уже существует: {}", message);
-        throw new RuntimeException("Кус с такими данными уже существует: "+ message );
+        log.error("Кус с таким названием уже существует: {}", message);
+        throw new RuntimeException("Кус с таким названием уже существует: " );
     }
 
 }
