@@ -42,20 +42,20 @@ public class CourseService {
 
         }
         catch (DataIntegrityViolationException e){ //ошибка на уникальность
-            dataIntegrityViolationException(e);
+            handleDataIntegrityViolationException(e,courseDto.getCourseName());
         }
         return null;
     }
 
     public CourseDto updateCourse(CourseDto courseDto){
-        foundCourseById(courseDto.getId());
+        Course findCourse = foundCourseById(courseDto.getId());
         validCourseName(courseDto.getCourseName());
         try {
             Course savedCourse = courseRepository.save(courseMapper.toEntity(courseDto));
-            log.info("Курс по названию: {} - был обновлен", savedCourse.getCourseName());
+            log.info("Курс по названию: {} - был обновлен на: {}", findCourse.getCourseName(), courseDto.getCourseName());
             return courseMapper.toDto(savedCourse);
         }catch (DataIntegrityViolationException e){
-            dataIntegrityViolationException(e);
+            handleDataIntegrityViolationException(e,courseDto.getCourseName());
         }
         return null;
     }
@@ -76,18 +76,18 @@ public class CourseService {
                 });
     }
 
-    private void validCourseName(String chapterName) {
+    private void validCourseName(String chapterName){
         if(chapterName== null || chapterName.isEmpty()){
             log.error("Названия курса не может быть пустым");
-            throw new RuntimeException("Названия курса не может быть пустым");
+            throw new IllegalArgumentException("Названия курса не может быть пустым");
         }
 
     }
 
-    private void dataIntegrityViolationException(DataIntegrityViolationException e) {
+    private void handleDataIntegrityViolationException(DataIntegrityViolationException e,String courseName) {
         String message = e.getMessage();
-        log.error("Кус с таким названием уже существует: {}", message);
-        throw new RuntimeException("Кус с таким названием уже существует: " );
+        log.error("Курс с таким названием уже существует: {}", message);
+        throw new DataIntegrityViolationException("Курс с таким названием уже существует: "+ courseName);
     }
 
 }
