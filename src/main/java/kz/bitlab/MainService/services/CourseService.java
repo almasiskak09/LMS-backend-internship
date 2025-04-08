@@ -84,7 +84,7 @@ public class CourseService {
 
     }
 
-    private void handleDataIntegrityViolationException(DataIntegrityViolationException e,String courseName) {
+    public void handleDataIntegrityViolationException(DataIntegrityViolationException e,String courseName) {
         String message = e.getMessage();
         log.error("Курс с таким названием уже существует: {}", message);
         throw new DataIntegrityViolationException("Курс с таким названием уже существует: "+ courseName);

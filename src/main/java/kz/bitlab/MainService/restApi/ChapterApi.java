@@ -54,8 +54,8 @@ public class ChapterApi {
 
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Удаление главы по ID")
-    public ResponseEntity<Void> deleteChapter(@PathVariable Long id) {
-        chapterService.deleteChapter(id);
+    public ResponseEntity<Void> deleteChapterById(@PathVariable Long id) {
+        chapterService.deleteChapterById(id);
         return ResponseEntity.noContent().build();
     }
 

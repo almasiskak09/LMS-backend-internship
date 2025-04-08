@@ -26,16 +26,13 @@ public class ChapterService {
 
         return chapterMapper.toDtoList(chapterList);
     }
-
     public List<ChapterDto> getAllChaptersByCourseId(Long courseId){
-        if(courseId == null || courseId <= 0){
-            log.error("ID курса не может быть null");
-            throw new IllegalArgumentException("ID курса не может быть null");
-        }
+        validCourseId(courseId);
 
         List<Chapter> chapterList = chapterRepository.findChaptersByCourseId(courseId);
         if(chapterList.isEmpty()){
-            log.warn("Нет глав по id урока: {} ", courseId);
+            log.info("Нет глав по id курса: {} ", courseId);
+            throw new NotFoundException("Нет глав по id курса: "+courseId);
         }else{
             log.info("Найдено {} глав по курс с id: {} ", chapterList.size(), courseId);
         }
@@ -49,6 +46,8 @@ public class ChapterService {
     }
 
     public ChapterDto createChapter(ChapterDto chapterDto) {
+
+        validCourseId(chapterDto.getCourseId());
         validChapterName(chapterDto.getChapterName());
 
         Chapter addingChapter = chapterMapper.toEntity(chapterDto);
@@ -57,7 +56,7 @@ public class ChapterService {
             log.info("Глава с названием: {} - был добавлен", addingChapter.getChapterName());
             return chapterMapper.toDto(addingChapter);
         }catch (DataIntegrityViolationException e){
-            DataIntegrityViolationException(e);
+            handleDataIntegrityViolationException(e,chapterDto.getChapterName());
         }
         return null;
     }
@@ -67,19 +66,18 @@ public class ChapterService {
         foundChapterById(chapterDto.getId());
         validChapterName(chapterDto.getChapterName());
 
-
         try {
             Chapter savingChapter = chapterRepository.save(chapterMapper.toEntity(chapterDto));
             log.info("Глава по названию: {} - была обновлена", savingChapter.getChapterName());
             return chapterMapper.toDto(savingChapter);
         } catch (DataIntegrityViolationException e) {
-            DataIntegrityViolationException(e);
+            handleDataIntegrityViolationException(e,chapterDto.getChapterName());
         }
         return null;
     }
 
 
-    public void deleteChapter(Long id) {
+    public void deleteChapterById(Long id) {
         foundChapterById(id);
         chapterRepository.deleteById(id);
         log.info("Глава с id:{} - была удалена",id);
@@ -99,15 +97,21 @@ public class ChapterService {
     private void validChapterName(String chapterName) {
         if(chapterName== null || chapterName.isEmpty()){
             log.error("Названия главы не может быть пустым");
-            throw new RuntimeException("Названия главы не может быть пустым");
+            throw new IllegalArgumentException("Названия главы не может быть пустым");
         }
 
     }
 
-    private void DataIntegrityViolationException(DataIntegrityViolationException e) {
+    private void validCourseId(Long courseId) {
+        if(courseId == null || courseId <= 0){
+            log.error("Пожалуйста, укажите корректный ID курса.");
+            throw new IllegalArgumentException("Пожалуйста, укажите корректный ID курса.");
+        }
+    }
+    private void handleDataIntegrityViolationException(DataIntegrityViolationException e,String chapterName) {
         String message = e.getMessage();
         log.error("Глава с таким названием уже существует: {}", message);
-        throw new RuntimeException("Глава с таким названием уже существует: " );
+        throw new DataIntegrityViolationException("Глава с таким названием уже существует: "+chapterName );
     }
 
 

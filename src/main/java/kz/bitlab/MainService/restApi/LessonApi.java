@@ -34,7 +34,7 @@ public class LessonApi {
     @Operation(summary = "Получение списка уроков по ID главы",
             description = "Позволяет получить список уроков, относящихся к конкретной главе, идентифицированному по его уникальному ID")
     public ResponseEntity<List<LessonDto>> getLessonsByChapterId(@PathVariable Long id) {
-        return ResponseEntity.ok(lessonService.getAllLessonsByChapter(id));
+        return ResponseEntity.ok(lessonService.getAllLessonsByChapterId(id));
     }
 
     @PostMapping
@@ -51,8 +51,8 @@ public class LessonApi {
 
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Удаление урока по ID")
-    public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
-        lessonService.deleteLesson(id);
+    public ResponseEntity<Void> deleteLessonById(@PathVariable Long id) {
+        lessonService.deleteLessonById(id);
         return ResponseEntity.noContent().build();
     }
 }

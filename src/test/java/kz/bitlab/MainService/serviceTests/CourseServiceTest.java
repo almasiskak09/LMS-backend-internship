@@ -1,4 +1,4 @@
-package kz.bitlab.MainService.courseService;
+package kz.bitlab.MainService.serviceTests;
 
 import kz.bitlab.MainService.dto.CourseDto;
 import kz.bitlab.MainService.entity.Course;
@@ -37,25 +37,25 @@ public class CourseServiceTest {
     private LocalDateTime date;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         date = LocalDateTime.of(2024, 4, 7, 12, 0);
-        course = new Course(1L,"Java","1J",date,date,null);
-        courseDto = new CourseDto(1L,"Java","1J",date,date,null);
+        course = new Course(1L, "Java", "1J", date, date, null);
+        courseDto = new CourseDto(1L, "Java", "1J", date, date, null);
     }
 
     @Test
     void getAllCourses() {
 
         List<Course> courseList = List.of(
-                new Course(1L,"Java","1J", date, date,null),
-                new Course(2L,"Python","2P", date, date,null),
-                new Course(3L,"C#","3C", date,date,null)
-                );
+                new Course(1L, "Java", "1J", date, date, null),
+                new Course(2L, "Python", "2P", date, date, null),
+                new Course(3L, "C#", "3C", date, date, null)
+        );
 
         List<CourseDto> courseDtoList = List.of(
-                new CourseDto(1L,"Java","1J", date, date,null),
-                new CourseDto(2L,"Python","2P", date, date,null),
-                new CourseDto(3L,"C#","3C", date, date,null)
+                new CourseDto(1L, "Java", "1J", date, date, null),
+                new CourseDto(2L, "Python", "2P", date, date, null),
+                new CourseDto(3L, "C#", "3C", date, date, null)
         );
 
 
@@ -66,7 +66,7 @@ public class CourseServiceTest {
 
         assertEquals(courseDtoList.size(), result.size());
         assertEquals("Python", result.get(1).getCourseName());
-        assertEquals(courseDtoList,result);
+        assertEquals(courseDtoList, result);
 
         verify(courseRepository, times(1)).findAll();
         verify(courseMapper, times(1)).toDtoList(courseList);
@@ -88,7 +88,7 @@ public class CourseServiceTest {
     }
 
     @Test
-    void courseNotFoundById_NotFoundException() {   //негативны сценарий
+    void courseNotFoundById_NotFoundException() {
         Long findId = 999L;
 
         when(courseRepository.findById(findId)).thenReturn(Optional.empty());
@@ -115,7 +115,7 @@ public class CourseServiceTest {
     }
 
     @Test
-    void createExistsCourseName_DataIntegrityViolationException() {
+    void createExistsCourseName_handleDataIntegrityViolationException() {
 
         when(courseMapper.toEntity(courseDto)).thenReturn(course);
         when(courseRepository.save(course)).thenThrow(new DataIntegrityViolationException(course.getCourseName()));
@@ -123,7 +123,6 @@ public class CourseServiceTest {
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> courseService.createCourse(courseDto));
 
         assertTrue(exception.getMessage().contains("Курс с таким названием уже существует: Java"));
-
         verify(courseRepository, times(1)).save(course);
     }
 
@@ -138,8 +137,8 @@ public class CourseServiceTest {
     @Test
     void updateCourse() {
 
-        CourseDto newCourseDto = new CourseDto(1L,"J_Java Developer","2J",date,date,null);
-        Course newCourse = new Course(1L,"J_Java Developer","2J",date,date,null);
+        CourseDto newCourseDto = new CourseDto(1L, "J_Java Developer", "2J", date, date, null);
+        Course newCourse = new Course(1L, "J_Java Developer", "2J", date, date, null);
 
         when(courseRepository.findById(newCourseDto.getId())).thenReturn(Optional.of(course));
         when(courseMapper.toEntity(newCourseDto)).thenReturn(newCourse);
@@ -151,7 +150,7 @@ public class CourseServiceTest {
         assertEquals(result, newCourseDto);
         assertEquals("J_Java Developer", result.getCourseName());
         assertEquals(newCourseDto.getCourseName(), result.getCourseName());
-        assertEquals("2J",result.getCourseDescription());
+        assertEquals("2J", result.getCourseDescription());
         assertEquals(newCourseDto.getUpdatedTime(), result.getUpdatedTime());
 
         verify(courseRepository, times(1)).findById(newCourseDto.getId());
@@ -163,45 +162,45 @@ public class CourseServiceTest {
 
     @Test
     void updateCourseNotFoundById_NotFoundException() {
-        Long finId = 999L;
-        CourseDto fakeCourseDto  = new CourseDto(finId,"Java","1J",date,date,null);
+        Long findId = 999L;
+        CourseDto fakeCourseDto = new CourseDto(findId, "Java", "1J", date, date, null);
 
-        when(courseRepository.findById(finId)).thenReturn(Optional.empty());
-        NotFoundException exception = assertThrows(NotFoundException.class, ()-> courseService.updateCourse(fakeCourseDto));
+        when(courseRepository.findById(findId)).thenReturn(Optional.empty());
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> courseService.updateCourse(fakeCourseDto));
 
         assertEquals("Курс с id: 999 - не существует", exception.getMessage());
-        verify(courseRepository, times(1)).findById(finId);
+        verify(courseRepository, times(1)).findById(findId);
     }
 
-   @Test
-   void updateCourseWithEmptyName_IllegalArgumentException() {
-        CourseDto courseDto = new CourseDto(1L,"", "1J", date,date,null);
+    @Test
+    void updateCourseWithEmptyName_IllegalArgumentException() {
+        CourseDto courseDto = new CourseDto(1L, "", "1J", date, date, null);
 
         when(courseRepository.findById(courseDto.getId())).thenReturn(Optional.of(course));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, ()-> courseService.updateCourse(courseDto));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> courseService.updateCourse(courseDto));
 
         assertEquals("Названия курса не может быть пустым", exception.getMessage());
-   }
+    }
 
-   @Test
-   void updateCourseWithExistsName_DataIntegrityViolationException() {
+    @Test
+    void updateCourseWithExistsName_handleDataIntegrityViolationException() {
 
-       CourseDto newCourseDto = new CourseDto(1L,"Java Mobile","1J",date,date,null);
-       Course newCourse = new Course(1L,"Java Mobile","1J",date,date,null);
+        CourseDto newCourseDto = new CourseDto(1L, "Java Mobile", "1J", date, date, null);
+        Course newCourse = new Course(1L, "Java Mobile", "1J", date, date, null);
 
-       when(courseRepository.findById(courseDto.getId())).thenReturn(Optional.of(course));
+        when(courseRepository.findById(courseDto.getId())).thenReturn(Optional.of(course));
         when(courseMapper.toEntity(newCourseDto)).thenReturn(newCourse);
         when(courseRepository.save(newCourse)).
                 thenThrow(new DataIntegrityViolationException(newCourse.getCourseName()));
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, ()->courseService.updateCourse(newCourseDto));
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> courseService.updateCourse(newCourseDto));
 
         assertEquals("Курс с таким названием уже существует: Java Mobile", exception.getMessage());
 
         verify(courseRepository, times(1)).findById(courseDto.getId());
         verify(courseRepository, times(1)).save(newCourse);
         verify(courseMapper, times(1)).toEntity(newCourseDto);
-   }
+    }
 
     @Test
     void deleteCourse() {
@@ -216,8 +215,8 @@ public class CourseServiceTest {
     @Test
     void deleteCourseNotFoundById_NotFoundException() {
         Long finId = 999L;
-        NotFoundException exception = assertThrows(NotFoundException.class, ()->courseService.deleteCourseById(finId));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> courseService.deleteCourseById(finId));
 
-        assertEquals("Курс с id: 999 - не существует",exception.getMessage());
+        assertEquals("Курс с id: 999 - не существует", exception.getMessage());
     }
 }
