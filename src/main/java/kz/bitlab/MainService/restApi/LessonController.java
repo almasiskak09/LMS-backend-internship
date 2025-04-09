@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kz.bitlab.MainService.dto.LessonDto;
 import kz.bitlab.MainService.services.LessonService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +16,7 @@ import java.util.List;
 @RequestMapping(value = "/api/lesson")
 @RequiredArgsConstructor
 @Tag(name = "Уроки",description = "Управление списком уроков")
-public class LessonApi {
+public class LessonController {
 
     private final LessonService lessonService;
 
@@ -30,7 +32,7 @@ public class LessonApi {
         return ResponseEntity.ok(lessonService.getLessonById(id));
     }
 
-    @GetMapping(value = "/separate/{id}")
+    @GetMapping(value = "/chapter/{id}")
     @Operation(summary = "Получение списка уроков по ID главы",
             description = "Позволяет получить список уроков, относящихся к конкретной главе, идентифицированному по его уникальному ID")
     public ResponseEntity<List<LessonDto>> getLessonsByChapterId(@PathVariable Long id) {
@@ -40,7 +42,7 @@ public class LessonApi {
     @PostMapping
     @Operation(summary = "Добавление урока")
     public ResponseEntity<LessonDto> createLesson(@RequestBody LessonDto lessonDto) {
-        return ResponseEntity.ok(lessonService.createLesson(lessonDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(lessonService.createLesson(lessonDto));
     }
 
     @PutMapping

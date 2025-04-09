@@ -74,13 +74,13 @@ public class CourseServiceTest {
     }
 
     @Test
-    void findCourseById() {
+    void getCourseById() {
         Long findId = 1L;
 
         when(courseRepository.findById(findId)).thenReturn(Optional.of(course));
         when(courseMapper.toDto(course)).thenReturn(courseDto);
 
-        CourseDto result = courseService.findCourseById(findId);
+        CourseDto result = courseService.getCourseById(findId);
 
         assertEquals(courseDto, result);
         assertEquals("Java", result.getCourseName());
@@ -88,12 +88,12 @@ public class CourseServiceTest {
     }
 
     @Test
-    void courseNotFoundById_NotFoundException() {
+    void getCourseById_NotFoundException() {
         Long findId = 999L;
 
         when(courseRepository.findById(findId)).thenReturn(Optional.empty());
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> courseService.findCourseById(findId));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> courseService.getCourseById(findId));
 
         assertEquals("Курс с id: 999 - не существует", exception.getMessage());
         verify(courseRepository, times(1)).findById(findId);

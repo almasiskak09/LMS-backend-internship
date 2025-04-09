@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kz.bitlab.MainService.dto.ChapterDto;
 import kz.bitlab.MainService.services.ChapterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @RequestMapping(value = "/api/chapter")
 @RequiredArgsConstructor
 @Tag(name = "Главы курсов", description = "Управление списком глав каждого курса")
-public class ChapterApi {
+public class ChapterController {
 
     private final ChapterService chapterService;
 
@@ -31,7 +32,7 @@ public class ChapterApi {
         return ResponseEntity.ok(chapterService.getChapterById(id));
     }
 
-    @GetMapping(value = "/separate/{id}")
+    @GetMapping(value = "/course/{id}")
     @Operation(summary = "Получение списка глав по ID курса",
              description = "Позволяет получить список глав, относящихся к конкретному курсу, идентифицированному по его уникальному ID")
     public ResponseEntity<List<ChapterDto>> getChaptersByCourseId(@PathVariable Long id) {
@@ -43,7 +44,8 @@ public class ChapterApi {
             description = "Добавление главы с указанием ID курса.К какому курсу принадлежит данная глава"
                 )
     public ResponseEntity<ChapterDto> createChapter(@RequestBody ChapterDto chapterDto) {
-        return ResponseEntity.ok(chapterService.createChapter(chapterDto));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(chapterService.createChapter(chapterDto));
     }
 
     @PutMapping

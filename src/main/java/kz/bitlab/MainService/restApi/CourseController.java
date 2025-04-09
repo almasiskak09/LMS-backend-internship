@@ -2,7 +2,6 @@ package kz.bitlab.MainService.restApi;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import kz.bitlab.MainService.dto.CourseDto;
 import kz.bitlab.MainService.services.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/course")
 @Tag(name = "Курсы", description = "Управление списком курсов")
-public class CourseApi {
+public class CourseController {
 
     private final CourseService courseService;
 
@@ -31,7 +30,7 @@ public class CourseApi {
     @Operation(summary = "Получить определенный курс по ID",
             description = "Возвращает определенный курс по требуемой ID, вместе с вложенными главами (Chapter)")
     public ResponseEntity<CourseDto> getCourseById(@PathVariable Long id){
-        return ResponseEntity.ok(courseService.findCourseById(id));
+        return ResponseEntity.ok(courseService.getCourseById(id));
     }
 
     @PostMapping

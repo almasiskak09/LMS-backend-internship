@@ -101,7 +101,7 @@ public class LessonServiceTest {
     }
 
     @Test
-    void lessonNotFoundById_NotFoundException() {   //негативны сценарий
+    void getLessonById_NotFoundException() {   //негативны сценарий
         Long findId = 999L;
 
         when(lessonRepository.findById(findId)).thenReturn(Optional.empty());
@@ -111,7 +111,6 @@ public class LessonServiceTest {
         assertEquals("Урок по id: 999 - не существует", exception.getMessage());
         verify(lessonRepository, times(1)).findById(findId);
     }
-
 
     @Test
     void getAllLessonsByChapterId() {
@@ -177,7 +176,7 @@ public class LessonServiceTest {
     }
 
     @Test
-    void createLesson_EmptyChapterId() {
+    void createLesson_InvalidChapterId() {
        LessonDto emptyLessonDto = new LessonDto(1L,"Мапперы", "Descripton", "Very Long Text",1,null,date,date);
 
        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> lessonService.createLesson(emptyLessonDto));

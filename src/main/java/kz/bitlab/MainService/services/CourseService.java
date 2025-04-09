@@ -26,7 +26,7 @@ public class CourseService {
         return courseDtoList;
     }
 
-    public CourseDto findCourseById(Long id){
+    public CourseDto getCourseById(Long id){
         Course foundCourse = foundCourseById(id);
         log.info("Курс по id:{} - был найден", id);
         return courseMapper.toDto(foundCourse);
@@ -61,7 +61,7 @@ public class CourseService {
     }
 
     public void deleteCourseById(Long id){
-       findCourseById(id);
+       getCourseById(id);
         courseRepository.deleteById(id);
         log.info("Курс с id: {} - удален", id);
     }

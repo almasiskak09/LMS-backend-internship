@@ -95,7 +95,7 @@ public class ChapterServiceTest {
     }
 
     @Test
-    void chapterNotFoundById_NotFoundException() {   //негативны сценарий
+    void getChapterById_NotFoundException() {   //негативны сценарий
         Long findId = 999L;
 
         when(chapterRepository.findById(findId)).thenReturn(Optional.empty());
@@ -143,7 +143,7 @@ public class ChapterServiceTest {
     }
 
     @Test
-    void getAllChaptersByCourseId_EmptyCourses() {
+    void getAllChaptersByCourseId_EmptyChapter() {
         Long courseId = 1L;
 
         when(chapterRepository.findChaptersByCourseId(courseId)).thenReturn(Collections.emptyList());
@@ -152,7 +152,6 @@ public class ChapterServiceTest {
 
         assertEquals("Нет глав по id курса: 1", exception.getMessage());
     }
-
 
     @Test
     void createChapter() {
