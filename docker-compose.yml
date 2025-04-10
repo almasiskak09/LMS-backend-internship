@@ -13,6 +13,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://main-service-database:5432/internship-db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=almas0606
+      - SPRINGDOC_API_DOCS_ENABLED=true
+      - SPRINGDOC_SWAGGER_UI_ENABLED=true
 
   main-service-database:
     image: 'postgres'
