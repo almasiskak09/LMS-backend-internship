@@ -51,6 +51,8 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
+	testImplementation 'com.h2database:h2'
+
 	// Для аннотаций Swagger
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.28'
     // Для интеграции Spring с OpenAPI и Swagger UI

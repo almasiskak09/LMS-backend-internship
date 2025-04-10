@@ -39,7 +39,6 @@ public class CourseService {
             courseRepository.save(addingCourse);
             log.info("Курс с названием: {} - был добавлен", addingCourse.getCourseName());
             return courseMapper.toDto(addingCourse);
-
         }
         catch (DataIntegrityViolationException e){ //ошибка на уникальность
             handleDataIntegrityViolationException(e,courseDto.getCourseName());

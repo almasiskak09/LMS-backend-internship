@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.bitlab.MainService.dto.LessonDto;
 import kz.bitlab.MainService.entity.Chapter;
 import kz.bitlab.MainService.entity.Lesson;
+import kz.bitlab.MainService.exceptions.NotFoundException;
 import kz.bitlab.MainService.restApi.LessonController;
 import kz.bitlab.MainService.services.LessonService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -78,6 +80,19 @@ public class LessonControllerTest {
     }
 
     @Test
+    void getLessonById_NotFoundException() throws Exception {
+        Long findId = 1L;
+        when(lessonService.getLessonById(findId)).thenThrow(new NotFoundException("Урок по id: 999 - не существует"));
+
+        mockMvc.perform(get("/api/lesson/{id}", findId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", is("Урок по id: 999 - не существует")))
+                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
+    @Test
     void getLessonsByChapterId() throws Exception {
         Long chapterId = 1L;
         List<LessonDto> lessonDtoList = List.of(lessonDto);
@@ -89,6 +104,31 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$[0].lessonName",is("Мапперы")))
                 .andExpect(jsonPath("$[0].lessonDescription",is("Descripton")));
     }
+
+    @Test
+    void getAllLessonsByChapterId_InvalidChapterId () throws Exception {
+        Long chapterId = -1L;
+        when(lessonService.getAllLessonsByChapterId(chapterId)).thenThrow(new IllegalArgumentException("Пожалуйста, укажите корректный ID главы."));
+        mockMvc.perform(get("/api/lesson/chapter/{id}", chapterId))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", is("Пожалуйста, укажите корректный ID главы.")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
+    @Test
+    void getAllLessonsByChapterId_EmptyLessons() throws Exception {
+        Long chapterId = 1L;
+        when(lessonService.getAllLessonsByChapterId(chapterId)).thenThrow(new NotFoundException("Нет уроков по данному id главы: 1"));
+        mockMvc.perform(get("/api/lesson/chapter/{id}", chapterId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Нет уроков по данному id главы: 1")))
+                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
     @Test
     void createLesson() throws Exception {
 
@@ -100,6 +140,45 @@ public class LessonControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.lessonName",is("Мапперы")))
                 .andExpect(jsonPath("$.lessonOrder",is(1)));
+    }
+
+    @Test
+    void createLesson_InvalidChapterId () throws Exception {
+        when(lessonService.createLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new IllegalArgumentException("Пожалуйста, укажите корректный ID главы."));
+        mockMvc.perform(post("/api/lesson")
+                .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(lessonDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", is("Пожалуйста, укажите корректный ID главы.")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
+    @Test
+    void createExistsLessonName_DataIntegrityViolationException()throws Exception {
+        when(lessonService.createLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new DataIntegrityViolationException("Урок с таким названием уже существует"));
+        mockMvc.perform(post("/api/lesson")
+             .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(lessonDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", is("Урок с таким названием уже существует")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
+    @Test
+    void createLessonWithEmptyName_IllegalArgumentException() throws Exception {
+        when(lessonService.createLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new IllegalArgumentException("Название урока не может быть пустым"));
+        mockMvc.perform(post("/api/lesson")
+        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(lessonDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Название урока не может быть пустым") ))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
     @Test
@@ -117,11 +196,60 @@ public class LessonControllerTest {
     }
 
     @Test
+    void updateLessonNotFoundById_NotFoundException() throws Exception {
+        Long lessonId = 999L;
+        when(lessonService.updateLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new NotFoundException("Урок по id: 999 - не существует"));
+        mockMvc.perform(put("/api/lesson")
+        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(lessonDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Урок по id: 999 - не существует")))
+                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
+    @Test
+    void updateLessonWithEmptyName_IllegalArgumentException () throws Exception {
+        when(lessonService.updateLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new IllegalArgumentException("Название урока не может быть пустым"));
+        mockMvc.perform(put("/api/lesson")
+        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(lessonDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", is("Название урока не может быть пустым")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
+    @Test
+    void updateLessonWithExistsName_DataIntegrityViolationException () throws Exception {
+        when(lessonService.updateLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new DataIntegrityViolationException("Урок с таким названием уже существует: Java"));
+        mockMvc.perform(put("/api/lesson")
+                .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(lessonDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Урок с таким названием уже существует: Java")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.timestamp", notNullValue()));
+    }
+
+    @Test
     void deleteLesson() throws Exception {
         Long findId = 1L;
         doNothing().when(lessonService).deleteLessonById(findId);
         mockMvc.perform(delete("/api/lesson/{id}", findId))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteLessonNotFoundById_NotFoundException () throws Exception {
+        Long findId = 999L;
+        doThrow(new NotFoundException("Урок по id: 999 - не существует")).when(lessonService).deleteLessonById(findId);
+        mockMvc.perform(delete("/api/lesson/{id}", findId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
 }
