@@ -56,7 +56,9 @@ dependencies {
 	// Для аннотаций Swagger
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.28'
     // Для интеграции Spring с OpenAPI и Swagger UI
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+	implementation("org.springframework.boot:spring-boot-starter-parent:3.4.1")
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
 
 }
 
