@@ -52,7 +52,7 @@ public class LessonServiceTest {
         lessonDto = new LessonDto(1L,"Мапперы", "Descripton", "Very Long Text",1,1L,date,date);
     }
 
-//
+    //Тест на Получение списка всех уроков
     @Test
     void getAllLessons() {
         List<Lesson> lessonList = List.of(
@@ -82,6 +82,7 @@ public class LessonServiceTest {
         verify(lessonMapper, times(1)).toDtoList(lessonList);
     }
 
+    //Тест на Получение урока по ID
     @Test
     void getLessonById() {
         Long id = 1L;
@@ -100,6 +101,7 @@ public class LessonServiceTest {
 
     }
 
+    //Тест на Получение урока по ID - не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getLessonById_NotFoundException() {   //негативны сценарий
         Long findId = 999L;
@@ -112,6 +114,7 @@ public class LessonServiceTest {
         verify(lessonRepository, times(1)).findById(findId);
     }
 
+    //Тест на Получение списка уроков по ID главы
     @Test
     void getAllLessonsByChapterId() {
         Long chapterId = 1L;
@@ -141,6 +144,7 @@ public class LessonServiceTest {
         verify(lessonMapper, times(1)).toDtoList(lessonList);
     }
 
+    //Тест на Получение списка уроков по ID главы - некорректный ID главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllLessonsByChapterId_InvalidChapterId() {
         Long chapterId = -1L;
@@ -150,6 +154,7 @@ public class LessonServiceTest {
         assertEquals("Пожалуйста, укажите корректный ID главы.", exception.getMessage());
     }
 
+    //Тест на Получение списка уроков по ID главы - пустой список уроков - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllLessonsByChapterId_EmptyLessons() {
         Long findId = 1L;
@@ -160,6 +165,7 @@ public class LessonServiceTest {
 
     }
 
+    //Тест на Создание урока
     @Test
     void createLesson() {
 
@@ -175,6 +181,7 @@ public class LessonServiceTest {
 
     }
 
+    //Тест на создание урока, Указан неверный ID главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createLesson_InvalidChapterId() {
        LessonDto emptyLessonDto = new LessonDto(1L,"Мапперы", "Descripton", "Very Long Text",1,null,date,date);
@@ -185,6 +192,7 @@ public class LessonServiceTest {
 
     }
 
+    //Тест на создание урока, урок с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createExistsLessonName_DataIntegrityViolationException() {
 
@@ -198,6 +206,7 @@ public class LessonServiceTest {
         verify(lessonRepository, times(1)).save(lesson);
     }
 
+    //Тест на создание урока, отправлено пустое название урока - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createLessonWithEmptyName_IllegalArgumentException() {
         LessonDto emptyLessonDto = new LessonDto(1L,"", "Descripton", "Very Long Text",1,1L,date,date);
@@ -207,6 +216,7 @@ public class LessonServiceTest {
 
     }
 
+    //Тест на обновление урока
     @Test
     void updateLesson() {
 
@@ -233,6 +243,7 @@ public class LessonServiceTest {
 
     }
 
+    //Тест на обновление урока - урок с таким Id не существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateLessonNotFoundById_NotFoundException() {
         LessonDto fakelessonDto = new LessonDto(999L,"FakeName", "FakeDescripton", "Very Long Text",1,1L,date,date);
@@ -244,6 +255,7 @@ public class LessonServiceTest {
         verify(lessonRepository, times(1)).findById(fakelessonDto.getId());
     }
 
+    //Тест на обновление урока - отправлено пустое название урока - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateLessonWithEmptyName_IllegalArgumentException() {
         LessonDto emptyLessonDto = new LessonDto(1L,"", "Descripton", "Very Long Text",1,1L,date,date);
@@ -254,6 +266,7 @@ public class LessonServiceTest {
         assertEquals("Название урока не может быть пустым", exception.getMessage());
     }
 
+    //Тест на обновление урока - урок с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateLessonWithExistsName_DataIntegrityViolationException() {
         LessonDto newLessonDto = new LessonDto(1L,"Spring", "Descripton_new", "Very Long Text",1,1L,date,date);
@@ -273,6 +286,7 @@ public class LessonServiceTest {
         verify(lessonMapper, times(1)).toEntity(newLessonDto);
     }
 
+    //Тест на удаление урока
     @Test
     void deleteLessonById() {
         Long findId = 1L;
@@ -284,6 +298,7 @@ public class LessonServiceTest {
 
     }
 
+    //Тест на удаление урока - урок не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void deleteLessonNotFoundById_NotFoundException() {
         Long findId = 999L;

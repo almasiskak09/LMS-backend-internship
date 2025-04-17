@@ -20,18 +20,20 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
 
+    //Получение списка всех курсов
     public List<CourseDto> getAllCourses () {
         List<CourseDto> courseDtoList = courseMapper.toDtoList(courseRepository.findAll());
         log.info("Был выполнен поиск списка всех курсов");
         return courseDtoList;
     }
-
+    //Получение курса по ID
     public CourseDto getCourseById(Long id){
         Course foundCourse = foundCourseById(id);
         log.info("Курс по id:{} - был найден", id);
         return courseMapper.toDto(foundCourse);
     }
 
+    //Создание курса
     public CourseDto createCourse(CourseDto courseDto){
         validCourseName(courseDto.getCourseName());
         Course addingCourse = courseMapper.toEntity(courseDto);
@@ -46,6 +48,7 @@ public class CourseService {
         return null;
     }
 
+    //Обновление курса
     public CourseDto updateCourse(CourseDto courseDto){
         Course findCourse = foundCourseById(courseDto.getId());
         validCourseName(courseDto.getCourseName());
@@ -59,6 +62,7 @@ public class CourseService {
         return null;
     }
 
+    //Удаление курса по ID
     public void deleteCourseById(Long id){
        getCourseById(id);
         courseRepository.deleteById(id);
@@ -66,7 +70,7 @@ public class CourseService {
     }
 
     // другие методы
-
+    // Поиск главы по ID. Проверка существует ли такой курс
     private Course foundCourseById(Long id) {
         return courseRepository.findById(id).
                 orElseThrow(()->{
@@ -75,6 +79,7 @@ public class CourseService {
                 });
     }
 
+    // Проверка название главы на пустое значение
     private void validCourseName(String chapterName){
         if(chapterName== null || chapterName.isEmpty()){
             log.error("Названия курса не может быть пустым");
@@ -83,6 +88,7 @@ public class CourseService {
 
     }
 
+    //Проверка на уникальность имени курса. Существует ли курс с таким же именем.
     public void handleDataIntegrityViolationException(DataIntegrityViolationException e,String courseName) {
         String message = e.getMessage();
         log.error("Курс с таким названием уже существует: {}", message);

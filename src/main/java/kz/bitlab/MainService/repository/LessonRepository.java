@@ -11,5 +11,6 @@ import java.util.List;
 @Transactional
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
+    //Поиск списка уроков по ID главы, Уроки которые относятся к конкретной главе
     List<Lesson> findAllLessonsByChapterId(Long chapterId);
 }

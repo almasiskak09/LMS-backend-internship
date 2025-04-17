@@ -50,6 +50,7 @@ public class CourseControllerTest {
         courseDto = new CourseDto(1L, "Java", "1J", date, date, null);
     }
 
+    //Тест на Получение списка всех курсов
     @Test
     void getAllCourses() throws Exception {
         List<CourseDto> courseDtoList = List.of(
@@ -68,6 +69,7 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$[1].courseDescription", is("2P")));
     }
 
+    //Тест на Получение курса по ID
     @Test
     void getCourseById() throws Exception {
         Long findCourseId = 1L;
@@ -82,6 +84,7 @@ public class CourseControllerTest {
 
     }
 
+    //Тест на Получение курса по ID - не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getCourseById_NotFoundException() throws Exception {
         Long findCourseId = 999L;
@@ -93,6 +96,7 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$.timestamp",notNullValue()));
     }
 
+    //Тест на Создание курса
     @Test
     void createCourse() throws Exception {
         when(courseService.createCourse(ArgumentMatchers.any(CourseDto.class))).thenReturn(courseDto);
@@ -106,6 +110,7 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$.courseName", is("Java")));
     }
 
+    //Тест на создание курса, курс с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createExistsCourseName_handleDataIntegrityViolationException() throws Exception {
         when(courseService.createCourse(ArgumentMatchers.any(CourseDto.class))).thenThrow(new DataIntegrityViolationException("Курс с таким названием уже существует: Java"));
@@ -119,6 +124,7 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$.timestamp",notNullValue()));
     }
 
+    //Тест на создание курса, отправлено пустое название курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createCourseWithEmptyName_IllegalArgumentException() throws Exception {
         when(courseService.createCourse(ArgumentMatchers.any(CourseDto.class))).thenThrow(new IllegalArgumentException("Названия курса не может быть пустым"));
@@ -133,6 +139,7 @@ public class CourseControllerTest {
 
     }
 
+    //Тест на обновление курса
     @Test
     void updateCourse() throws Exception {
         CourseDto updateCourseDto = new CourseDto(1L, "Go", "1G", date, date, null);
@@ -148,6 +155,7 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$.courseDescription",is("1G")));
     }
 
+    //Тест на обновление курса - курс с таким Id не существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateCourseNotFoundById_NotFoundException() throws Exception {
         Long findCourseId = 999L;
@@ -162,6 +170,7 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$.timestamp",notNullValue()));
     }
 
+    //Тест на обновление курса - отправлено пустое название курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateCourseWithEmptyName_IllegalArgumentException() throws Exception {
         when(courseService.updateCourse(ArgumentMatchers.any(CourseDto.class))).thenThrow(new IllegalArgumentException("Названия курса не может быть пустым"));
@@ -176,6 +185,7 @@ public class CourseControllerTest {
 
     }
 
+    //Тест на обновление курса - курса с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateCourseWithExistsName_handleDataIntegrityViolationException()throws Exception {
         when(courseService.updateCourse(ArgumentMatchers.any(CourseDto.class))).thenThrow(new DataIntegrityViolationException("Курс с таким названием уже существует: Java"));
@@ -189,14 +199,16 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$.timestamp",notNullValue()));
     }
 
+    //Тест на удаление курса
     @Test
     void deleteCourse() throws Exception {
         Long findCourseId = 1L;
         doNothing().when(courseService).deleteCourseById(findCourseId);
         mockMvc.perform(delete("/api/course/{id}", findCourseId))
                 .andExpect(status().isNoContent());
-    } //делать через do.Comand
+    } //делать через do.command
 
+    //Тест на удаление курса - курса не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void deleteCourseNotFoundById_NotFoundException() throws Exception {
         Long findCourseId = 999L;

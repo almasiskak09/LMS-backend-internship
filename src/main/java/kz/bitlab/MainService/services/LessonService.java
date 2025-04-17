@@ -20,7 +20,7 @@ public class LessonService {
     private final LessonRepository lessonRepository;
     private final LessonMapper lessonMapper;
 
-
+    //Получение списка всех уроков
     public List<LessonDto> getAllLessons(){
         List<Lesson> lessonList = lessonRepository.findAll();
         log.info("Был выполнен поиск список всех уроков");
@@ -28,6 +28,7 @@ public class LessonService {
         return lessonMapper.toDtoList(lessonList);
     }
 
+    //Поиск списка уроков по ID главы, Уроки которые относятся к конкретной главе
     public List<LessonDto> getAllLessonsByChapterId(Long chapterId){
         validChapterId(chapterId);
 
@@ -41,6 +42,7 @@ public class LessonService {
         return lessonMapper.toDtoList(lessonList);
     }
 
+    //Получение урока по ID
     public LessonDto getLessonById(Long id){
 
         Lesson lesson = foundLessonById(id);
@@ -48,6 +50,7 @@ public class LessonService {
         return lessonMapper.toDto(lesson);
     }
 
+    //Создание урока
     public LessonDto createLesson(LessonDto lessonDto){
 
         validChapterId(lessonDto.getChapterId());
@@ -65,6 +68,7 @@ public class LessonService {
         return null;
     }
 
+    //Обновление урока
     public LessonDto updateLesson(LessonDto lessonDto){
         foundLessonById(lessonDto.getId());
         validLessonName(lessonDto.getLessonName());
@@ -80,6 +84,7 @@ public class LessonService {
         return null;
     }
 
+    //Удаление урока по ID
     public void deleteLessonById(Long id){
         foundLessonById(id);
         lessonRepository.deleteById(id);
@@ -88,7 +93,7 @@ public class LessonService {
     }
 
     // другие методы
-
+    // Поиск урока по ID. Проверка существует ли такой урок
     private Lesson foundLessonById(Long id){
     return lessonRepository.findById(id).
             orElseThrow(() -> {
@@ -97,6 +102,7 @@ public class LessonService {
             });
     }
 
+    // Проверка отправленного ID на пустое или неправильное значение (меньше нуля)
     private void validChapterId(Long chapterId){
         if(chapterId == null || chapterId <=0){
             log.error("Пожалуйста, укажите корректный ID главы.");
@@ -104,6 +110,7 @@ public class LessonService {
         }
     }
 
+    // Проверка название урока на пустое значение
     private void validLessonName(String lessonName){
         if(lessonName == null || lessonName.isEmpty()){
             log.error("Название урока не может быть пустым");
@@ -112,6 +119,7 @@ public class LessonService {
 
     }
 
+    //Проверка на уникальность имени урока. Существует ли урок с таким же именем.
     private void handleDataIntegrityViolationException(DataIntegrityViolationException e,String lessnName){
         String message = e.getMessage();
         log.error("Урок с таким названием уже существует: {} ", lessnName);

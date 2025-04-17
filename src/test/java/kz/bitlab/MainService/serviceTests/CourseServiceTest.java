@@ -43,6 +43,7 @@ public class CourseServiceTest {
         courseDto = new CourseDto(1L, "Java", "1J", date, date, null);
     }
 
+    //Тест на Получение списка всех курсов
     @Test
     void getAllCourses() {
 
@@ -73,6 +74,7 @@ public class CourseServiceTest {
 
     }
 
+    //Тест на Получение курса по ID
     @Test
     void getCourseById() {
         Long findId = 1L;
@@ -87,6 +89,7 @@ public class CourseServiceTest {
         verify(courseRepository, times(1)).findById(findId);
     }
 
+    //Тест на Получение курса по ID - не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getCourseById_NotFoundException() {
         Long findId = 999L;
@@ -99,6 +102,7 @@ public class CourseServiceTest {
         verify(courseRepository, times(1)).findById(findId);
     }
 
+    //Тест на Создание курса
     @Test
     void createCourse() {
 
@@ -114,6 +118,7 @@ public class CourseServiceTest {
 
     }
 
+    //Тест на создание курса, курс с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createExistsCourseName_handleDataIntegrityViolationException() {
 
@@ -126,6 +131,7 @@ public class CourseServiceTest {
         verify(courseRepository, times(1)).save(course);
     }
 
+    //Тест на создание курса, отправлено пустое название курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createCourseWithEmptyName_IllegalArgumentException() {
         CourseDto emptyCourseDto = new CourseDto(1L, "", "1J", date, date, null);
@@ -134,6 +140,7 @@ public class CourseServiceTest {
         assertEquals("Названия курса не может быть пустым", exception.getMessage());
     }
 
+    //Тест на обновление курса
     @Test
     void updateCourse() {
 
@@ -160,6 +167,7 @@ public class CourseServiceTest {
 
     }
 
+    //Тест на обновление курса - курс с таким Id не существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateCourseNotFoundById_NotFoundException() {
         Long findId = 999L;
@@ -172,6 +180,7 @@ public class CourseServiceTest {
         verify(courseRepository, times(1)).findById(findId);
     }
 
+    //Тест на обновление курса - отправлено пустое название курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateCourseWithEmptyName_IllegalArgumentException() {
         CourseDto courseDto = new CourseDto(1L, "", "1J", date, date, null);
@@ -182,6 +191,7 @@ public class CourseServiceTest {
         assertEquals("Названия курса не может быть пустым", exception.getMessage());
     }
 
+    //Тест на обновление курса - курса с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateCourseWithExistsName_handleDataIntegrityViolationException() {
 
@@ -202,6 +212,7 @@ public class CourseServiceTest {
         verify(courseMapper, times(1)).toEntity(newCourseDto);
     }
 
+    //Тест на удаление курса
     @Test
     void deleteCourse() {
         Long findId = 1L;
@@ -212,6 +223,7 @@ public class CourseServiceTest {
         verify(courseRepository, times(1)).findById(findId);
     }
 
+    //Тест на удаление курса - курса не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void deleteCourseNotFoundById_NotFoundException() {
         Long finId = 999L;

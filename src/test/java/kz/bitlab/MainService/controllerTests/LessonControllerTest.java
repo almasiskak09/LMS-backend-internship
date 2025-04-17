@@ -51,6 +51,7 @@ public class LessonControllerTest {
         lessonDto = new LessonDto(1L,"Мапперы", "Descripton", "Very Long Text",1,1L,date,date);
     }
 
+    //Тест на Получение списка всех уроков
     @Test
     void getAllLessons() throws Exception {
         List<LessonDto> lessonDtoList = List.of(
@@ -68,6 +69,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$[2].lessonName",is("Lesson3")));
     }
 
+    //Тест на Получение урока по ID
     @Test
     void getLessonById() throws Exception {
         Long findId = 1L;
@@ -79,6 +81,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.lessonDescription",is("Descripton")));
     }
 
+    //Тест на Получение урока по ID - не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getLessonById_NotFoundException() throws Exception {
         Long findId = 1L;
@@ -92,6 +95,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на Получение списка уроков по ID главы
     @Test
     void getLessonsByChapterId() throws Exception {
         Long chapterId = 1L;
@@ -105,6 +109,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$[0].lessonDescription",is("Descripton")));
     }
 
+    //Тест на Получение списка уроков по ID главы - некорректный ID главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllLessonsByChapterId_InvalidChapterId () throws Exception {
         Long chapterId = -1L;
@@ -117,6 +122,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на Получение списка уроков по ID главы - пустой список уроков - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllLessonsByChapterId_EmptyLessons() throws Exception {
         Long chapterId = 1L;
@@ -129,6 +135,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на Создание урока
     @Test
     void createLesson() throws Exception {
 
@@ -142,6 +149,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.lessonOrder",is(1)));
     }
 
+    //Тест на создание урока, Указан неверный ID главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createLesson_InvalidChapterId () throws Exception {
         when(lessonService.createLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new IllegalArgumentException("Пожалуйста, укажите корректный ID главы."));
@@ -155,6 +163,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на создание урока, урок с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createExistsLessonName_DataIntegrityViolationException()throws Exception {
         when(lessonService.createLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new DataIntegrityViolationException("Урок с таким названием уже существует"));
@@ -168,6 +177,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на создание урока, отправлено пустое название урока - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createLessonWithEmptyName_IllegalArgumentException() throws Exception {
         when(lessonService.createLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new IllegalArgumentException("Название урока не может быть пустым"));
@@ -181,6 +191,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на обновление урока
     @Test
     void updateLesson() throws Exception {
         LessonDto newLessonDto = new LessonDto(1L,"Exceptions", "Про исключения", "Very Long Text",5,1L,date,date);
@@ -195,6 +206,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.lessonOrder",is(5)));
     }
 
+    //Тест на обновление урока - урок с таким Id не существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateLessonNotFoundById_NotFoundException() throws Exception {
         Long lessonId = 999L;
@@ -209,6 +221,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на обновление урока - отправлено пустое название урока - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateLessonWithEmptyName_IllegalArgumentException () throws Exception {
         when(lessonService.updateLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new IllegalArgumentException("Название урока не может быть пустым"));
@@ -222,6 +235,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на обновление урока - урок с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateLessonWithExistsName_DataIntegrityViolationException () throws Exception {
         when(lessonService.updateLesson(ArgumentMatchers.any(LessonDto.class))).thenThrow(new DataIntegrityViolationException("Урок с таким названием уже существует: Java"));
@@ -235,6 +249,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.timestamp", notNullValue()));
     }
 
+    //Тест на удаление урока
     @Test
     void deleteLesson() throws Exception {
         Long findId = 1L;
@@ -243,6 +258,7 @@ public class LessonControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    //Тест на удаление урока - урок не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void deleteLessonNotFoundById_NotFoundException () throws Exception {
         Long findId = 999L;

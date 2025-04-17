@@ -51,6 +51,7 @@ public class ChapterControllerTest {
         chapterDto = new ChapterDto(1L,"Основы,синтаксис языка","Long Text",1,1L, date,date,null);
     }
 
+    //Тест на Получение списка всех глав
     @Test
     void getAllChapters() throws Exception {
         List<ChapterDto> chapterDtoList = List.of(
@@ -68,6 +69,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$[2].chapterDescription", is("Very Long Text") ));
     }
 
+    //Тест на Получение главы по ID
     @Test
     void getChapterById() throws Exception {
         Long findId = 1L;
@@ -79,6 +81,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.chapterName", is("Основы,синтаксис языка")));
     }
 
+    //Тест на Получение главы по ID - не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getChapterById_NotFoundException () throws Exception {
         Long findCourseId = 999L;
@@ -90,6 +93,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на Получение списка глав по ID курса
     @Test
     void getAllChaptersByCourseId() throws Exception {
         Long courseId = 1L;
@@ -103,6 +107,7 @@ public class ChapterControllerTest {
 
     }
 
+    //Тест на Получение списка глав по ID курса - некорректный ID курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllChaptersByCourseId_InvalidCourseId() throws Exception {
         Long courseId = 999L;
@@ -115,6 +120,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на Получение списка глав по ID курса - пустой список глав - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllChaptersByCourseId_EmptyChapter() throws Exception {
         Long courseId = 1L;
@@ -127,6 +133,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на Создание главы
     @Test
     void createChapter() throws Exception {
         when(chapterService.createChapter(ArgumentMatchers.any(ChapterDto.class))).thenReturn(chapterDto);
@@ -140,6 +147,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.chapterName", is("Основы,синтаксис языка")));
     }
 
+    //Тест на создание главы, Указан неверный ID курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createChapter_InvalidCourseId() throws Exception {
         when(chapterService.createChapter(ArgumentMatchers.any(ChapterDto.class))).thenThrow(new IllegalArgumentException("Пожалуйста, укажите корректный ID курса."));
@@ -153,6 +161,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на создание главы, глава с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void  createExistsChapterName_DataIntegrityViolationException() throws Exception {
 
@@ -167,6 +176,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на создание главы, отправлено пустое название главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createChapterWithEmptyName_IllegalArgumentException() throws Exception {
         when(chapterService.createChapter(ArgumentMatchers.any(ChapterDto.class))).thenThrow(new IllegalArgumentException("Названия главы не может быть пустым"));
@@ -180,6 +190,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на обновление главы
     @Test
     void updateChapter() throws Exception {
 
@@ -196,6 +207,7 @@ public class ChapterControllerTest {
 
     }
 
+    //Тест на обновление главы - глава с таким Id не существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateChapterNotFoundById_NotFoundException() throws Exception {
         when(chapterService.updateChapter(ArgumentMatchers.any(ChapterDto.class))).thenThrow(new NotFoundException("Глава курса по id: 999 - не существует"));
@@ -211,20 +223,22 @@ public class ChapterControllerTest {
 
     }
 
+    //Тест на обновление главы - отправлено пустое название главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateChapterWithEmptyName_IllegalArgumentException() throws Exception {
-        when(chapterService.updateChapter(ArgumentMatchers.any(ChapterDto.class))).thenThrow(new IllegalArgumentException("Глава с таким названием уже существует"));
+        when(chapterService.updateChapter(ArgumentMatchers.any(ChapterDto.class))).thenThrow(new IllegalArgumentException("Название главы не может быть пустым"));
 
         mockMvc.perform(put("/api/chapter")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(chapterDto)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("Глава с таким названием уже существует")))
+                .andExpect(jsonPath("$.message", is("Название главы не может быть пустым")))
                 .andExpect(jsonPath("$.status", is(400)))
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на обновление главы - глава с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateChapterWithExistsName_DataIntegrityViolationException() throws Exception {
         when(chapterService.updateChapter(ArgumentMatchers.any(ChapterDto.class))).thenThrow(new DataIntegrityViolationException("Глава с таким названием уже существует"));
@@ -238,6 +252,7 @@ public class ChapterControllerTest {
                 .andExpect(jsonPath("$.timestamp",is (notNullValue())));
     }
 
+    //Тест на удаление главы
     @Test
     void deleteChapter() throws Exception {
         Long findId = 1L;
@@ -246,6 +261,7 @@ public class ChapterControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    //Тест на удаление главы - глава не найдена - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void deleteChapterNotFoundById_NotFoundException() throws Exception {
         Long findId = 999L;

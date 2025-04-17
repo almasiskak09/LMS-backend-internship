@@ -48,6 +48,7 @@ public class ChapterServiceTest {
         chapterDto = new ChapterDto(1L,"Основы,синтаксис языка","Long Text",1,1L, date,date,null);
     }
 
+    //Тест на Получение списка всех глав
     @Test
     void getAllChapters() {
         List<Chapter> chapterList = List.of(
@@ -76,6 +77,7 @@ public class ChapterServiceTest {
         verify(chapterMapper, times(1)).toDtoList(chapterList);
     }
 
+    //Тест на Получение главы по ID
     @Test
     void getChapterById() {
         Long id = 1L;
@@ -93,6 +95,7 @@ public class ChapterServiceTest {
 
     }
 
+    //Тест на Получение главы по ID - не найден - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getChapterById_NotFoundException() {   //негативны сценарий
         Long findId = 999L;
@@ -105,6 +108,7 @@ public class ChapterServiceTest {
         verify(chapterRepository, times(1)).findById(findId);
     }
 
+    //Тест на Получение списка глав по ID курса
     @Test
     void getAllChaptersByCourseId() {
         Long courseId = 1L;
@@ -132,6 +136,7 @@ public class ChapterServiceTest {
         verify(chapterMapper, times(1)).toDtoList(chapterList);
     }
 
+    //Тест на Получение списка глав по ID курса - некорректный ID курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllChaptersByCourseId_InvalidCourseId() {
         Long courseId = -1L;
@@ -141,6 +146,7 @@ public class ChapterServiceTest {
         assertEquals("Пожалуйста, укажите корректный ID курса.", exception.getMessage());
     }
 
+    //Тест на Получение списка глав по ID курса - пустой список глав - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void getAllChaptersByCourseId_EmptyChapter() {
         Long courseId = 1L;
@@ -152,6 +158,7 @@ public class ChapterServiceTest {
         assertEquals("Нет глав по id курса: 1", exception.getMessage());
     }
 
+    //Тест на Создание главы
     @Test
     void createChapter() {
 
@@ -167,6 +174,7 @@ public class ChapterServiceTest {
 
     }
 
+    //Тест на создание главы, Указан неверный ID курса - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createChapter_InvalidCourseId() {
         ChapterDto emptyChapterDto = new ChapterDto(1L,"Основы,синтаксис языка","Long Text",1,null, date,date,null);
@@ -175,6 +183,7 @@ public class ChapterServiceTest {
         assertEquals("Пожалуйста, укажите корректный ID курса.", exception.getMessage());
     }
 
+    //Тест на создание главы, глава с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createExistsChapterName_DataIntegrityViolationException() {
 
@@ -188,6 +197,7 @@ public class ChapterServiceTest {
         verify(chapterRepository, times(1)).save(chapter);
     }
 
+    //Тест на создание главы, отправлено пустое название главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void createChapterWithEmptyName_IllegalArgumentException() {
         ChapterDto emptyChapterDto = new ChapterDto(1L,"","Long Text",1,1L, date,date,null);
@@ -197,6 +207,7 @@ public class ChapterServiceTest {
 
     }
 
+    //Тест на обновление главы
     @Test
     void updateChapter() {
 
@@ -223,6 +234,7 @@ public class ChapterServiceTest {
 
     }
 
+    //Тест на обновление главы - глава с таким Id не существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateChapterNotFoundById_NotFoundException() {
         Long findId = 999L;
@@ -235,6 +247,7 @@ public class ChapterServiceTest {
         verify(chapterRepository, times(1)).findById(findId);
     }
 
+    //Тест на обновление главы - отправлено пустое название главы - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateChapterWithEmptyName_IllegalArgumentException() {
         ChapterDto chapterDto1 = new ChapterDto(1L,"","Long Text",1,1L, date,date,null);
@@ -245,6 +258,7 @@ public class ChapterServiceTest {
         assertEquals("Названия главы не может быть пустым", exception.getMessage());
     }
 
+    //Тест на обновление главы - глава с таким названием уже существует - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void updateChapterWithExistsName_DataIntegrityViolationException() {
 
@@ -265,6 +279,7 @@ public class ChapterServiceTest {
         verify(chapterMapper, times(1)).toEntity(newChapterDto);
     }
 
+    //Тест на удаление главы
     @Test
     void deleteChapterById() {
         Long findId = 1L;
@@ -275,6 +290,7 @@ public class ChapterServiceTest {
         verify(chapterRepository, times(1)).findById(findId);
     }
 
+    //Тест на удаление главы - глава не найдена - НЕГАТИВНЫЙ СЦЕНАРИЙ
     @Test
     void deleteChapterNotFoundById_NotFoundException() {
         Long findId = 999L;
