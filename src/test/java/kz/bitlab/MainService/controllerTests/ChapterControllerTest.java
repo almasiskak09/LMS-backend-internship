@@ -5,7 +5,7 @@ import kz.bitlab.MainService.dto.ChapterDto;
 import kz.bitlab.MainService.entity.Chapter;
 import kz.bitlab.MainService.entity.Course;
 import kz.bitlab.MainService.exceptions.NotFoundException;
-import kz.bitlab.MainService.restApi.ChapterController;
+import kz.bitlab.MainService.restController.ChapterController;
 import kz.bitlab.MainService.services.ChapterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

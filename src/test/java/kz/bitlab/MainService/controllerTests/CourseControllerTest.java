@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.bitlab.MainService.dto.CourseDto;
 import kz.bitlab.MainService.entity.Course;
 import kz.bitlab.MainService.exceptions.NotFoundException;
-import kz.bitlab.MainService.restApi.CourseController;
+import kz.bitlab.MainService.restController.CourseController;
 import kz.bitlab.MainService.services.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
