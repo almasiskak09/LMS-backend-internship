@@ -13,6 +13,7 @@ http://localhost:7070
 При запуске поднимаются:
 - Main Service
 - Main Service Database
+- Keycloak 20.0.3
 - Keycloak Service (из другого репозитория)
 - Keycloak Service Database
 
