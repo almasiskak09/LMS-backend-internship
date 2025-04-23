@@ -7,6 +7,7 @@ import kz.bitlab.MainService.services.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,18 +40,21 @@ public class LessonController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Добавление урока")
     public ResponseEntity<LessonDto> createLesson(@RequestBody LessonDto lessonDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonService.createLesson(lessonDto));
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Обновление конкретного урока")
     public ResponseEntity<LessonDto> updateLesson(@RequestBody LessonDto lessonDto) {
         return ResponseEntity.ok(lessonService.updateLesson(lessonDto));
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Удаление урока по ID")
     public ResponseEntity<Void> deleteLessonById(@PathVariable Long id) {
         lessonService.deleteLessonById(id);

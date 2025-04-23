@@ -7,6 +7,7 @@ import kz.bitlab.MainService.services.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class ChapterController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Добавление главы",
             description = "Добавление главы с указанием ID курса.К какому курсу принадлежит данная глава"
                 )
@@ -49,12 +51,14 @@ public class ChapterController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Обновление главы")
     public ResponseEntity<ChapterDto> updateChapter(@RequestBody ChapterDto chapterDto) {
         return ResponseEntity.ok(chapterService.updateChapter(chapterDto));
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Удаление главы по ID")
     public ResponseEntity<Void> deleteChapterById(@PathVariable Long id) {
         chapterService.deleteChapterById(id);

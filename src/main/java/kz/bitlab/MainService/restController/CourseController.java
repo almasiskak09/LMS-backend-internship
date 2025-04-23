@@ -7,6 +7,7 @@ import kz.bitlab.MainService.services.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class CourseController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Добавление курса")
     public ResponseEntity<CourseDto> addCourse( @RequestBody CourseDto courseDto){
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -41,6 +43,7 @@ public class CourseController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Обновление курса",
                 description = "Обновляет курс по отправленному DTO объекту")
     public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto){
@@ -48,6 +51,7 @@ public class CourseController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Удаление курса по его ID")
     public ResponseEntity<Void> deleteCourseById(@PathVariable Long id){
         courseService.deleteCourseById(id);
