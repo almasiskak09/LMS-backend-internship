@@ -16,6 +16,7 @@ http://localhost:7070
 - Keycloak 20.0.3
 - Keycloak Service (из другого репозитория)
 - Keycloak Service Database
+- MinIO
 
 Команда для запуска всех сервисов:
 "docker-compose up --build"
