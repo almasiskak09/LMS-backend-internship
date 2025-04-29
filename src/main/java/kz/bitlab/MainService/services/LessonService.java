@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -70,13 +71,19 @@ public class LessonService {
 
     //Обновление урока
     public LessonDto updateLesson(LessonDto lessonDto){
-        foundLessonById(lessonDto.getId());
+        Lesson foundLesson = foundLessonById(lessonDto.getId());
         validLessonName(lessonDto.getLessonName());
 
         try {
-            Lesson savingLesson = lessonRepository.save(lessonMapper.toEntity(lessonDto));
-            log.info("Урок по названию: {} - была обновлена", savingLesson.getLessonName());
-            return lessonMapper.toDto(savingLesson);
+            foundLesson.setLessonName(lessonDto.getLessonName());
+            foundLesson.setLessonContent(lessonDto.getLessonContent());
+            foundLesson.setLessonDescription(lessonDto.getLessonDescription());
+            foundLesson.setUpdatedTime(LocalDateTime.now());
+
+            Lesson savedLesson = lessonRepository.save(foundLesson);
+
+            log.info("Урок по названию: {} - была обновлена", savedLesson.getLessonName());
+            return lessonMapper.toDto(savedLesson);
 
         }catch (DataIntegrityViolationException e){
             handleDataIntegrityViolationException(e,lessonDto.getLessonName());

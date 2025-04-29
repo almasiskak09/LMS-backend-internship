@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -43,8 +44,8 @@ public class Lesson {
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
-    @UpdateTimestamp
-    @Column(name = "updated_time")
+    @CreationTimestamp
+    @Column(name = "updated_time", updatable = false)
     private LocalDateTime updatedTime;
 
     @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL,fetch = FetchType.LAZY)

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -53,7 +54,11 @@ public class CourseService {
         Course findCourse = foundCourseById(courseDto.getId());
         validCourseName(courseDto.getCourseName());
         try {
-            Course savedCourse = courseRepository.save(courseMapper.toEntity(courseDto));
+            findCourse.setCourseName(courseDto.getCourseName());
+            findCourse.setCourseDescription(courseDto.getCourseDescription());
+            findCourse.setUpdatedTime(LocalDateTime.now());
+
+            Course savedCourse = courseRepository.save(findCourse);
             log.info("Курс по названию: {} - был обновлен на: {}", findCourse.getCourseName(), courseDto.getCourseName());
             return courseMapper.toDto(savedCourse);
         }catch (DataIntegrityViolationException e){

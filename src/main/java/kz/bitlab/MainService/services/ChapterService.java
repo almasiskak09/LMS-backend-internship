@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -68,13 +69,17 @@ public class ChapterService {
 
     //Обновление главы
     public ChapterDto updateChapter(ChapterDto chapterDto) {
-        foundChapterById(chapterDto.getId());
+        Chapter foundChapter = foundChapterById(chapterDto.getId());
         validChapterName(chapterDto.getChapterName());
 
         try {
-            Chapter savingChapter = chapterRepository.save(chapterMapper.toEntity(chapterDto));
-            log.info("Глава по названию: {} - была обновлена", savingChapter.getChapterName());
-            return chapterMapper.toDto(savingChapter);
+            foundChapter.setChapterName(chapterDto.getChapterName());
+            foundChapter.setChapterDescription(chapterDto.getChapterDescription());
+            foundChapter.setUpdatedTime(LocalDateTime.now());
+
+            Chapter savedChapter = chapterRepository.save(foundChapter);
+            log.info("Глава по названию: {} - была обновлена", savedChapter.getChapterName());
+            return chapterMapper.toDto(savedChapter);
         } catch (DataIntegrityViolationException e) {
             handleDataIntegrityViolationException(e,chapterDto.getChapterName());
         }
