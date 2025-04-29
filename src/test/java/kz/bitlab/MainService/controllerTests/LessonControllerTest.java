@@ -5,7 +5,7 @@ import kz.bitlab.MainService.dto.LessonDto;
 import kz.bitlab.MainService.entity.Chapter;
 import kz.bitlab.MainService.entity.Lesson;
 import kz.bitlab.MainService.exceptions.NotFoundException;
-import kz.bitlab.MainService.restController.LessonController;
+import kz.bitlab.MainService.controller.LessonController;
 import kz.bitlab.MainService.services.LessonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

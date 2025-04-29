@@ -33,3 +33,13 @@ CREATE TABLE lesson
     CONSTRAINT fk_lesson_to_chapter FOREIGN KEY (chapter_id) REFERENCES chapter(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_lesson_chapter ON lesson (chapter_id);
+
+CREATE TABLE attachments
+(
+    id BIGSERIAL PRIMARY KEY,
+    attachment_name VARCHAR(255),
+    url TEXT,
+    lesson_id BIGINT NOT NULL,
+    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_attachment_to_lesson FOREIGN KEY (lesson_id) REFERENCES lesson(id) ON DELETE CASCADE
+)

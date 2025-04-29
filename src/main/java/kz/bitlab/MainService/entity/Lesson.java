@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "lesson")
@@ -45,4 +46,7 @@ public class Lesson {
     @UpdateTimestamp
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
+
+    @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Attachment> attachments;
 }

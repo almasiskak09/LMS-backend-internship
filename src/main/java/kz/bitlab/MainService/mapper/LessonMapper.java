@@ -9,13 +9,15 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = AttachmentMapper.class)
 public interface LessonMapper {
 
     @Mapping(source = "chapterId", target = "chapter", qualifiedByName = "mapChapterFromId")
+    @Mapping(source = "attachmentDtoList", target = "attachments")
     Lesson toEntity(LessonDto lessonDto);
 
     @Mapping(source = "chapter.id", target = "chapterId")
+    @Mapping(source = "attachments", target = "attachmentDtoList")
     LessonDto toDto(Lesson lesson);
 
     List<Lesson>toEntityList(List<LessonDto> lessonDtoList);

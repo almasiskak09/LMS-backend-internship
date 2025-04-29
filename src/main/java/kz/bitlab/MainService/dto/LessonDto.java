@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +21,5 @@ public class LessonDto {
     private Long chapterId; //id chapter
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
+    private List<AttachmentDto> attachmentDtoList;
 }

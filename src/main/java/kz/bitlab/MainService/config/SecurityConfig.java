@@ -24,7 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/course/**").authenticated()
                         .requestMatchers("/api/chapter/**").authenticated()
                         .requestMatchers("/api/lesson/**").authenticated()
-
+                        .requestMatchers("/file/**").authenticated()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
