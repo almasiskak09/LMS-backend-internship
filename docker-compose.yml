@@ -15,6 +15,9 @@ services:
       - SPRING_DATASOURCE_PASSWORD=almas0606
       - SPRINGDOC_API_DOCS_ENABLED=true
       - SPRINGDOC_SWAGGER_UI_ENABLED=true
+      - MINIO_URL=http://minio:9000  # Миняй URL Minio
+      - MINIO_BUCKET=mybucket
+
 
   main-service-database:
     image: 'postgres'
@@ -75,7 +78,35 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  minio:
+    image: minio/minio:latest
+    container_name: 'minio_container'
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    volumes:
+      - minio-data:/data  
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: adminadmin
+    command: server --console-address ":9090" /data
+    
+  create-bucket:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set myminio http://minio:9000 admin adminadmin;
+      mc mb myminio/mybucket;
+      mc policy set public myminio/mybucket;
+      exit 0;
+      "
+
+
 volumes:
   pgdata:
+  minio-data:
 
 

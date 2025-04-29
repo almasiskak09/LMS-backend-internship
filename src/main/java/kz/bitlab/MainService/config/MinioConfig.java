@@ -11,9 +11,6 @@ public class MinioConfig {
     @Value("${minio.url}")
     private String url;
 
-    @Value("${minio.bucket}")
-    private String bucket;
-
     @Value("${minio.user}")
     private String user;
 

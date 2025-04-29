@@ -39,10 +39,9 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:8081/auth/realms/bitlab/protocol/openid-connect/certs")
+        return NimbusJwtDecoder.withJwkSetUri("http://keycloak:8080/auth/realms/bitlab/protocol/openid-connect/certs")
                 .build();
     }
-
     @Bean
     public KeycloakRoleConverter keycloakRoleConverter() {
         return new KeycloakRoleConverter();
