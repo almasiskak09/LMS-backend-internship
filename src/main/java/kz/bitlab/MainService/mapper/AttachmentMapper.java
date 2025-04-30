@@ -18,6 +18,7 @@ public interface AttachmentMapper {
 
     @Mapping(source = "lesson.id", target = "lessonId")
     AttachmentDto toDto(Attachment attachment);
+
     List<AttachmentDto> toDto(List<Attachment> attachmentList);
     List<Attachment> toEntity(List<AttachmentDto> attachmentDtoList);
 

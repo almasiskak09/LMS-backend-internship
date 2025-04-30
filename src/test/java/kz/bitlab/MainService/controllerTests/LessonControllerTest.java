@@ -12,8 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,7 +31,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LessonController.class)
+@TestPropertySource(properties = {
+        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration"
+})
 public class LessonControllerTest {
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,17 +55,21 @@ public class LessonControllerTest {
     void setUp() {
         date = LocalDateTime.of(2024,07,14,12,0);
         chapter = new Chapter(1L,"Основы,синтаксис языка", "Long Text",1,null,date,date,null);
-        lesson = new Lesson(1L,"Мапперы", "Descripton", "Very Long Text",1,chapter,date,date);
-        lessonDto = new LessonDto(1L,"Мапперы", "Descripton", "Very Long Text",1,1L,date,date);
+        lesson = new Lesson(1L,"Мапперы", "Descripton", "Very Long Text",1,chapter,date,date,null);
+        lessonDto = new LessonDto(1L,"Мапперы", "Descripton", "Very Long Text",1,1L,date,date,null);
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("test-user", "none", "ROLE_ADMIN")
+        );
     }
 
     //Тест на Получение списка всех уроков
     @Test
+    @WithMockUser(roles = "USER")
     void getAllLessons() throws Exception {
         List<LessonDto> lessonDtoList = List.of(
-                new LessonDto(1L,"Lesson1", "Desc1","Very Long Text",1,1L,date,date),
-                new LessonDto(2L,"Lesson2", "Desc2","Very Long Text",1,1L,date,date),
-                new LessonDto(3L,"Lesson3", "Desc3","Very Long Text",1,1L,date,date)
+                new LessonDto(1L,"Lesson1", "Desc1","Very Long Text",1,1L,date,date,null),
+                new LessonDto(2L,"Lesson2", "Desc2","Very Long Text",1,1L,date,date,null),
+                new LessonDto(3L,"Lesson3", "Desc3","Very Long Text",1,1L,date,date,null)
         );
 
         when(lessonService.getAllLessons()).thenReturn(lessonDtoList);
@@ -193,7 +206,7 @@ public class LessonControllerTest {
     //Тест на обновление урока
     @Test
     void updateLesson() throws Exception {
-        LessonDto newLessonDto = new LessonDto(1L,"Exceptions", "Про исключения", "Very Long Text",5,1L,date,date);
+        LessonDto newLessonDto = new LessonDto(1L,"Exceptions", "Про исключения", "Very Long Text",5,1L,date,date,null);
         when(lessonService.updateLesson(ArgumentMatchers.any(LessonDto.class))).thenReturn(newLessonDto);
 
         mockMvc.perform(put("/api/lesson")

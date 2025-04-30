@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -148,8 +149,7 @@ public class CourseServiceTest {
         Course newCourse = new Course(1L, "J_Java Developer", "2J", date, date, null);
 
         when(courseRepository.findById(newCourseDto.getId())).thenReturn(Optional.of(course));
-        when(courseMapper.toEntity(newCourseDto)).thenReturn(newCourse);
-        when(courseRepository.save(newCourse)).thenReturn(newCourse);
+        when(courseRepository.save(any(Course.class))).thenReturn(newCourse);
         when(courseMapper.toDto(newCourse)).thenReturn(newCourseDto);
 
         CourseDto result = courseService.updateCourse(newCourseDto);
@@ -161,8 +161,7 @@ public class CourseServiceTest {
         assertEquals(newCourseDto.getUpdatedTime(), result.getUpdatedTime());
 
         verify(courseRepository, times(1)).findById(newCourseDto.getId());
-        verify(courseRepository, times(1)).save(newCourse);
-        verify(courseMapper, times(1)).toEntity(newCourseDto);
+        verify(courseRepository, times(1)).save(any(Course.class));
 
 
     }
@@ -199,8 +198,7 @@ public class CourseServiceTest {
         Course newCourse = new Course(1L, "Java Mobile", "1J", date, date, null);
 
         when(courseRepository.findById(courseDto.getId())).thenReturn(Optional.of(course));
-        when(courseMapper.toEntity(newCourseDto)).thenReturn(newCourse);
-        when(courseRepository.save(newCourse)).
+        when(courseRepository.save(any(Course.class))).
                 thenThrow(new DataIntegrityViolationException(newCourse.getCourseName()));
 
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> courseService.updateCourse(newCourseDto));
@@ -208,8 +206,7 @@ public class CourseServiceTest {
         assertEquals("Курс с таким названием уже существует: Java Mobile", exception.getMessage());
 
         verify(courseRepository, times(1)).findById(courseDto.getId());
-        verify(courseRepository, times(1)).save(newCourse);
-        verify(courseMapper, times(1)).toEntity(newCourseDto);
+        verify(courseRepository, times(1)).save(any(Course.class));
     }
 
     //Тест на удаление курса

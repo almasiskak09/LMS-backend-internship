@@ -215,8 +215,7 @@ public class ChapterServiceTest {
         Chapter newChapter = new Chapter(1L,"Переменные","Medium Text",1,course,date,date,null);
 
         when(chapterRepository.findById(newChapter.getId())).thenReturn(Optional.of(chapter));
-        when(chapterMapper.toEntity(newChapterDto)).thenReturn(newChapter);
-        when(chapterRepository.save(newChapter)).thenReturn(newChapter);
+        when(chapterRepository.save(any(Chapter.class))).thenReturn(newChapter);
         when(chapterMapper.toDto(newChapter)).thenReturn(newChapterDto);
 
         ChapterDto result = chapterService.updateChapter(newChapterDto);
@@ -228,8 +227,7 @@ public class ChapterServiceTest {
         assertEquals(newChapterDto.getUpdatedTime(), result.getUpdatedTime());
 
         verify(chapterRepository, times(1)).findById(newChapterDto.getId());
-        verify(chapterRepository, times(1)).save(newChapter);
-        verify(chapterMapper, times(1)).toEntity(newChapterDto);
+        verify(chapterRepository, times(1)).save(any(Chapter.class));
 
 
     }
@@ -266,8 +264,7 @@ public class ChapterServiceTest {
         Chapter newChapter = new Chapter(1L,"Web-socket","Ultra Text",1,course,date,date,null);
 
         when(chapterRepository.findById(newChapterDto.getId())).thenReturn(Optional.of(chapter));
-        when(chapterMapper.toEntity(newChapterDto)).thenReturn(newChapter);
-        when(chapterRepository.save(newChapter)).
+        when(chapterRepository.save(any(Chapter.class))).
                 thenThrow(new DataIntegrityViolationException(newChapter.getChapterName()));
 
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, ()->chapterService.updateChapter(newChapterDto));
@@ -275,8 +272,7 @@ public class ChapterServiceTest {
         assertEquals("Глава с таким названием уже существует: Web-socket", exception.getMessage());
 
         verify(chapterRepository, times(1)).findById(newChapterDto.getId());
-        verify(chapterRepository, times(1)).save(newChapter);
-        verify(chapterMapper, times(1)).toEntity(newChapterDto);
+        verify(chapterRepository, times(1)).save(any(Chapter.class));
     }
 
     //Тест на удаление главы

@@ -40,11 +40,11 @@ public class Lesson {
     @JoinColumn(name = "chapter_id", nullable = false)
     private Chapter chapter;
 
-    @UpdateTimestamp
+    @CreationTimestamp
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Column(name = "updated_time", updatable = false)
     private LocalDateTime updatedTime;
 
