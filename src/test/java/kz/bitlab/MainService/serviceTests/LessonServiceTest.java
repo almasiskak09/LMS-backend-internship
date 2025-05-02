@@ -8,6 +8,7 @@ import kz.bitlab.MainService.exceptions.NotFoundException;
 import kz.bitlab.MainService.mapper.LessonMapper;
 import kz.bitlab.MainService.repository.LessonRepository;
 import kz.bitlab.MainService.services.LessonService;
+import kz.bitlab.MainService.services.serviceImpl.LessonServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.*;
 public class LessonServiceTest {
 
     @InjectMocks
-    private LessonService lessonService;
+    private LessonServiceImpl lessonService;
 
     @Mock
     private LessonRepository lessonRepository;

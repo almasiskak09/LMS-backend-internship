@@ -6,6 +6,7 @@ import kz.bitlab.MainService.exceptions.NotFoundException;
 import kz.bitlab.MainService.mapper.CourseMapper;
 import kz.bitlab.MainService.repository.CourseRepository;
 import kz.bitlab.MainService.services.CourseService;
+import kz.bitlab.MainService.services.serviceImpl.CourseServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +26,7 @@ import java.util.Optional;
 public class CourseServiceTest {
 
     @InjectMocks
-    private CourseService courseService;
+    private CourseServiceImpl courseService;
 
     @Mock
     private CourseRepository courseRepository;

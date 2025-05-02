@@ -7,6 +7,7 @@ import kz.bitlab.MainService.exceptions.NotFoundException;
 import kz.bitlab.MainService.mapper.ChapterMapper;
 import kz.bitlab.MainService.repository.ChapterRepository;
 import kz.bitlab.MainService.services.ChapterService;
+import kz.bitlab.MainService.services.serviceImpl.ChapterServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,7 @@ import java.util.Optional;
 public class ChapterServiceTest {
 
     @InjectMocks
-    private ChapterService chapterService;
+    private ChapterServiceImpl chapterService;
 
     @Mock
     private ChapterRepository chapterRepository;
